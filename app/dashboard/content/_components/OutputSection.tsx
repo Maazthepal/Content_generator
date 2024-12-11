@@ -1,40 +1,38 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react'
-import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor } from '@toast-ui/react-editor';
-import { Button } from '@/components/ui/button';
-import { Copy } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
 
-interface props {
+interface Props {
   aiOutput: string;
 }
 
-const OutputSection = ({aiOutput}:props) => {
-  const editorRef:any=useRef();
+const OutputSection = ({ aiOutput }: Props) => {
+  const [editorContent, setEditorContent] = useState("Your Result will appear here");
 
   useEffect(() => {
-    const editorInstance=editorRef.current.getInstance();
-    editorInstance.setMarkdown(aiOutput);
-  },[aiOutput])
+    setEditorContent(aiOutput);
+  }, [aiOutput]);
 
   return (
-    <div className='bg-white shadow-lg border rounded-lg ' > 
-    <div className='flex justify-between items-center p-5' >
-      <h2 className='font-medium text-lg' >Your Result</h2>
-      <Button className='flex gap-2' onClick={() => navigator.clipboard.writeText(aiOutput)} ><Copy className='w-4 h-4' /> Copy</Button>
-    </div>
-      <Editor
-      ref={editorRef}
-        initialValue="Your Result will appear here"
-        height="600px"
-        initialEditType="wysiwyg"
-        useCommandShortcut={true}
-        onChange={()=>console.log(editorRef.current.getInstance().getMarkdown() )}
+    <div className="bg-white shadow-lg border rounded-lg">
+      <div className="flex justify-between items-center p-5">
+        <h2 className="font-medium text-lg">Your Result</h2>
+        <Button className="flex gap-2" onClick={() => navigator.clipboard.writeText(editorContent)}>
+          <Copy className="w-4 h-4" /> Copy
+        </Button>
+      </div>
+      <ReactQuill
+        value={editorContent}
+        onChange={setEditorContent}
+        theme="snow"
+        className="h-[600px]"
       />
-
     </div>
-  )
-}
+  );
+};
 
-export default OutputSection
+export default OutputSection;
